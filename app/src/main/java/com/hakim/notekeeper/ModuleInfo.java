@@ -1,4 +1,4 @@
-package com.jwhh.jim.notekeeper;
+package com.hakim.notekeeper;
 
 import android.os.Parcel;
 import android.os.Parcelable;
