@@ -1,5 +1,6 @@
 package com.hakim.notekeeper;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,11 +10,15 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.util.List;
 
 public class NoteActivity extends AppCompatActivity {
+    public static final String NOTE_INFO = "com.hakim.notekeeper.NOTE_INFO";
+    private NoteInfo mNote;
+    private boolean isNewNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +36,32 @@ public class NoteActivity extends AppCompatActivity {
         adapterCourse.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerCourses.setAdapter(adapterCourse);
+
+        readDisplayStateValue();
+
+        EditText textNoteTitle = (EditText) findViewById(R.id.text_note_title);
+        EditText textNoteText = (EditText) findViewById(R.id.text_note_content);
+
+        if (!isNewNote)
+        {
+            displayNote(spinnerCourses, textNoteText, textNoteTitle);
+        }
+
+    }
+
+    private void displayNote(Spinner spinnerCourses, EditText textNoteText, EditText textNoteTitle) {
+        List<CourseInfo> courses = DataManager.getInstance().getCourses();
+        int courseIndex = courses.indexOf(mNote.getCourse());
+        spinnerCourses.setSelection(courseIndex);
+        textNoteTitle.setText(mNote.getTitle());
+        textNoteText.setText(mNote.getText());
+
+    }
+
+    private void readDisplayStateValue() {
+        Intent intent = getIntent();
+        mNote = intent.getParcelableExtra(NOTE_INFO);
+        isNewNote = mNote == null;
     }
 
     @Override
