@@ -17,6 +17,9 @@ public class NoteActivity extends AppCompatActivity {
     public static final int POSITION_NOT_SET = -1;
     private NoteInfo mNote;
     private boolean isNewNote;
+    private Spinner mSpinnerCourses;
+    private EditText mTextNoteTitle;
+    private EditText mTextNoteText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +28,7 @@ public class NoteActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Spinner spinnerCourses = (Spinner) findViewById(R.id.spinner_course);
+        mSpinnerCourses = (Spinner) findViewById(R.id.spinner_course);
 
         List<CourseInfo> course = DataManager.getInstance().getCourses();
 
@@ -33,16 +36,16 @@ public class NoteActivity extends AppCompatActivity {
         ArrayAdapter<CourseInfo> adapterCourse = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, course);
         adapterCourse.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        spinnerCourses.setAdapter(adapterCourse);
+        mSpinnerCourses.setAdapter(adapterCourse);
 
         readDisplayStateValue();
 
-        EditText textNoteTitle = (EditText) findViewById(R.id.text_note_title);
-        EditText textNoteText = (EditText) findViewById(R.id.text_note_content);
+        mTextNoteTitle = (EditText) findViewById(R.id.text_note_title);
+        mTextNoteText = (EditText) findViewById(R.id.text_note_content);
 
         if (!isNewNote)
         {
-            displayNote(spinnerCourses, textNoteText, textNoteTitle);
+            displayNote(mSpinnerCourses, mTextNoteText, mTextNoteTitle);
         }
 
     }
@@ -80,10 +83,24 @@ public class NoteActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_send_email) {
+            sendEmail();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendEmail() {
+        CourseInfo course = (CourseInfo) mSpinnerCourses.getSelectedItem();
+        String subject = mTextNoteTitle.getText().toString();
+        String text = "Check out what I learnt at the pluralsite course \"" +
+                course.getTitle() + "\" \n" + mTextNoteText.getText().toString();
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("message/rfc822");
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        startActivity(Intent.createChooser(intent, "Choose am email client"));
     }
 }
