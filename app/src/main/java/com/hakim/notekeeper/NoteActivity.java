@@ -101,6 +101,7 @@ public class NoteActivity extends AppCompatActivity {
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, text);
-        startActivity(Intent.createChooser(intent, "Choose am email client"));
+        startActivity(intent);
+//        startActivity(Intent.createChooser(intent, "Choose am email client"));
     }
 }
