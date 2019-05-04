@@ -14,6 +14,8 @@ import java.util.List;
 
 public class NoteListActivity extends AppCompatActivity {
 
+    private ArrayAdapter<NoteInfo> mAdaptorNotes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,16 +31,22 @@ public class NoteListActivity extends AppCompatActivity {
             }
         });
 
-        initiliseDisplayContent();
+        initialiseDisplayContent();
     }
 
-    private void initiliseDisplayContent() {
+    @Override
+    protected  void onResume(){
+        super.onResume();
+        mAdaptorNotes.notifyDataSetChanged();
+    }
+
+    private void initialiseDisplayContent() {
         final ListView listNotes = (ListView) findViewById(R.id.list_notes);
 
         List<NoteInfo> notes = DataManager.getInstance().getNotes();
-        ArrayAdapter<NoteInfo> adaptorNotes = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, notes);
+        mAdaptorNotes = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, notes);
 
-        listNotes.setAdapter(adaptorNotes);
+        listNotes.setAdapter(mAdaptorNotes);
 
         listNotes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
