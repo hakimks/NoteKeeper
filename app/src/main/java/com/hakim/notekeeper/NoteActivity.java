@@ -22,6 +22,9 @@ public class NoteActivity extends AppCompatActivity {
     private EditText mTextNoteText;
     private int mNotePosition;
     private boolean mIsCancelling;
+    private String mOrignalNoteCourseId;
+    private String mOrignalNoteTitle;
+    private String mOrignalNoteText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +43,8 @@ public class NoteActivity extends AppCompatActivity {
 
         mSpinnerCourses.setAdapter(adapterCourse);
 
-        readDisplayStateValue();
+        readDisplayStateValues();
+        saveOrignalNoteValues();
 
         mTextNoteTitle = (EditText) findViewById(R.id.text_note_title);
         mTextNoteText = (EditText) findViewById(R.id.text_note_content);
@@ -51,6 +55,15 @@ public class NoteActivity extends AppCompatActivity {
 
     }
 
+    private void saveOrignalNoteValues() {
+        if (isNewNote){
+            return;
+        }
+        mOrignalNoteCourseId = mNote.getCourse().getCourseId();
+        mOrignalNoteTitle = mNote.getTitle();
+        mOrignalNoteText = mNote.getText();
+    }
+
 
     @Override
     protected void onPause() {
@@ -58,11 +71,20 @@ public class NoteActivity extends AppCompatActivity {
         if(mIsCancelling){
             if(isNewNote){
                 DataManager.getInstance().removeNote(mNotePosition);
+            } else {
+                storePreviousNoteValues();
             }
 
         } else {
             saveNote();
         }
+    }
+
+    private void storePreviousNoteValues() {
+        CourseInfo course = DataManager.getInstance().getCourse(mOrignalNoteCourseId);
+        mNote.setCourse(course);
+        mNote.setTitle(mOrignalNoteTitle);
+        mNote.setText(mOrignalNoteText);
     }
 
     private void saveNote() {
@@ -80,7 +102,7 @@ public class NoteActivity extends AppCompatActivity {
 
     }
 
-    private void readDisplayStateValue() {
+    private void readDisplayStateValues() {
         Intent intent = getIntent();
         int position = intent.getIntExtra(NOTE_POSITION, POSITION_NOT_SET);
         isNewNote = position == POSITION_NOT_SET;
