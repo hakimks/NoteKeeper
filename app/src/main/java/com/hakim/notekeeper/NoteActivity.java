@@ -14,6 +14,10 @@ import java.util.List;
 
 public class NoteActivity extends AppCompatActivity {
     public static final String NOTE_POSITION = "com.hakim.notekeeper.NOTE_POSITION";
+    public static final String ORIGNAL_NOTE_COURSE_ID = "com.hakim.notekeeper.ORIGNAL_NOTE_COURSE_ID";
+    public static final String ORIGNAL_NOTE_COURSE_TITLE = "com.hakim.notekeeper.ORIGNAL_NOTE_COURSE_TITLE";
+    public static final String ORIGNAL_NOTE_COURSE_TEXT = "com.hakim.notekeeper.ORIGNAL_NOTE_COURSE_TEXT";
+
     public static final int POSITION_NOT_SET = -1;
     private NoteInfo mNote;
     private boolean isNewNote;
@@ -44,7 +48,12 @@ public class NoteActivity extends AppCompatActivity {
         mSpinnerCourses.setAdapter(adapterCourse);
 
         readDisplayStateValues();
-        saveOrignalNoteValues();
+        if (savedInstanceState == null){
+            saveOrignalNoteValues();
+        } else {
+            restoreOrignalNoteValues(savedInstanceState);
+        }
+
 
         mTextNoteTitle = (EditText) findViewById(R.id.text_note_title);
         mTextNoteText = (EditText) findViewById(R.id.text_note_content);
@@ -53,6 +62,12 @@ public class NoteActivity extends AppCompatActivity {
             displayNote(mSpinnerCourses, mTextNoteText, mTextNoteTitle);
         }
 
+    }
+
+    private void restoreOrignalNoteValues(Bundle savedInstanceState) {
+        mOrignalNoteCourseId = savedInstanceState.getString(ORIGNAL_NOTE_COURSE_ID);
+        mOrignalNoteTitle = savedInstanceState.getString(ORIGNAL_NOTE_COURSE_TITLE);
+        mOrignalNoteText = savedInstanceState.getString(ORIGNAL_NOTE_COURSE_TEXT);
     }
 
     private void saveOrignalNoteValues() {
@@ -85,6 +100,14 @@ public class NoteActivity extends AppCompatActivity {
         mNote.setCourse(course);
         mNote.setTitle(mOrignalNoteTitle);
         mNote.setText(mOrignalNoteText);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ORIGNAL_NOTE_COURSE_ID, mOrignalNoteCourseId);
+        outState.putString(ORIGNAL_NOTE_COURSE_TITLE, mOrignalNoteTitle);
+        outState.putString(ORIGNAL_NOTE_COURSE_TEXT, mOrignalNoteText);
     }
 
     private void saveNote() {
