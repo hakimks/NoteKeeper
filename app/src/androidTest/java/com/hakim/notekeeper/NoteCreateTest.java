@@ -15,6 +15,7 @@ import static android.support.test.espresso.action.ViewActions.*;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
 import static org.hamcrest.Matchers.*;
+import static android.support.test.espresso.assertion.ViewAssertions.*;
 
 import static org.junit.Assert.*;
 
@@ -44,10 +45,23 @@ public class NoteCreateTest {
 
         onData(allOf(instanceOf(CourseInfo.class), equalTo(course))).perform(click());
 
-        onView(withId(R.id.text_note_title)).perform(typeText(noteTile));
+        onView(withId(R.id.spinner_course)).check(matches(withSpinnerText(
+                containsString(course.getTitle()))));
+
+        onView(withId(R.id.text_note_title)).perform(typeText(noteTile))
+            .check(matches(withText(noteTile)));
+
         onView(withId(R.id.text_note_content)).perform(typeText(noteText), ViewActions.closeSoftKeyboard());
+        onView(withId(R.id.text_note_content)).check(matches(withText(containsString(noteText))));
 
         pressBack();
+
+        int noteIndex = sDataManager.getNotes().size() -1;
+        NoteInfo note = sDataManager.getNotes().get(noteIndex);
+
+        assertEquals(course, note.getCourse());
+        assertEquals(noteTile, note.getTitle());
+        assertEquals(noteText, note.getText());
 
     }
 }
