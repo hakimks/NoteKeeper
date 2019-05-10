@@ -7,6 +7,9 @@
         android:orderInCategory="100"
         android:title="Cancel" />
     <item
+        android:id="@+id/action_next"
+        android:title="Next" />
+    <item
         android:id="@+id/action_send_email"
         android:orderInCategory="101"
         android:title="Send as Email"
