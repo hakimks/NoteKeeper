@@ -4,11 +4,15 @@
     tools:context="com.hakim.notekeeper.NoteActivity">
     <item
         android:id="@+id/action_cancel"
+        android:icon="@android:drawable/ic_menu_revert"
         android:orderInCategory="100"
-        android:title="Cancel" />
+        android:title="Cancel"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_next"
-        android:title="Next" />
+        android:icon="@android:drawable/ic_media_next"
+        android:title="Next"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_send_email"
         android:orderInCategory="101"
