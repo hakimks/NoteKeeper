@@ -141,10 +141,12 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_courses) {
             displayCourses();
         } else if (id == R.id.nav_share) {
-            handleSelection("Share thid");
+//            handleSelection(getString(R.string.nav_share_message));
+            handleSelection(R.string.nav_share_message);
 
         } else if (id == R.id.nav_send) {
-            handleSelection("Send it");
+//            handleSelection(getString(R.string.nav_send_message));
+            handleSelection(R.string.nav_send_message);
 
         }
 
@@ -153,8 +155,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void handleSelection(String message) {
+    private void handleSelection(int message_id) {
         View view = findViewById(R.id.list_items);
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(view, message_id, Snackbar.LENGTH_LONG).show();
     }
 }
