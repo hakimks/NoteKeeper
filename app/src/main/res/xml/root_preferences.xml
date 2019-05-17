@@ -24,36 +24,24 @@
             android:key="user_display_name"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/pref_title_display_name" />
-
+            android:summary="Your name Here"
+            android:title="@string/pref_tile_display_name" />
         <EditTextPreference
-            app:defaultValue="@string/pref_default_display_name"
-            app:key="user_display_name"
-            app:title="@string/pref_title_display_name"
-            app:useSimpleSummaryProvider="true" />
-
+            android:defaultValue="@string/pref_defaul_email_address"
+            android:key="user_email_address"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:inputType="textEmailAddress"
+            android:summary="Your Email Here"
+            android:title="@string/pref_title_email_address" />
         <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
+            android:defaultValue="@string/pref_favorite_social_default"
+            android:entries="@array/pref_entries_favorite_social"
+            android:entryValues="@array/pref_values_favorire_socila"
+            android:key="user_favorite_social"
+            android:summary="Your Favorite Social Network Here"
+            android:title="@string/pref_favorite_social_title" />
 
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/sync_header">
-
-        <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
-
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
 
     </PreferenceCategory>
 
