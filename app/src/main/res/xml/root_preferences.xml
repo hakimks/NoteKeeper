@@ -35,7 +35,7 @@
             android:summary="Your Email Here"
             android:title="@string/pref_title_email_address" />
         <ListPreference
-            android:defaultValue="@string/pref_favorite_social_default"
+            android:defaultValue="@string/pref_default_value_favorite_social"
             android:entries="@array/pref_entries_favorite_social"
             android:entryValues="@array/pref_values_favorire_social"
             android:key="user_favorite_social"
