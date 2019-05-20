@@ -43,13 +43,12 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
     <string name="pref_favorite_social_title">Favorite Social Network</string>
-    <string name="pref_favorite_social_default">Favorite Social Network</string>
     <string-array name="pref_entries_favorite_social">
         <item>Google+</item>
         <item>Facebook</item>
         <item>Twitter</item>
     </string-array>
-    <string-array name="pref_values_favorire_socila">
+    <string-array name="pref_values_favorire_social">
         <item>http://plus.google.com</item>
         <item>http://facebook.com</item>
         <item>http://twitter.com</item>

@@ -37,7 +37,7 @@
         <ListPreference
             android:defaultValue="@string/pref_favorite_social_default"
             android:entries="@array/pref_entries_favorite_social"
-            android:entryValues="@array/pref_values_favorire_socila"
+            android:entryValues="@array/pref_values_favorire_social"
             android:key="user_favorite_social"
             android:summary="Your Favorite Social Network Here"
             android:title="@string/pref_favorite_social_title" />
