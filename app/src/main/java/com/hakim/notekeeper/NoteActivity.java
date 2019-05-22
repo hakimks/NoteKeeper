@@ -1,6 +1,8 @@
 package com.hakim.notekeeper;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -10,6 +12,8 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import com.hakim.notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
 
 import java.util.List;
 
@@ -31,6 +35,17 @@ public class NoteActivity extends AppCompatActivity {
     private String mOrignalNoteCourseId;
     private String mOrignalNoteTitle;
     private String mOrignalNoteText;
+    private NoteKeeperOpenHelper mOpenHelper;
+    private Cursor mNotesCursor;
+    private int mCourseIdPos;
+    private int mNoteTitlePos;
+    private int mNoteTextPos;
+
+    @Override
+    protected void onDestroy() {
+        mOpenHelper.close();
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +53,8 @@ public class NoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_note);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mOpenHelper = new NoteKeeperOpenHelper(this);
 
         mSpinnerCourses = (Spinner) findViewById(R.id.spinner_course);
 
@@ -61,11 +78,40 @@ public class NoteActivity extends AppCompatActivity {
         mTextNoteText = (EditText) findViewById(R.id.text_note_content);
 
         if (!isNewNote){
-            displayNote(mSpinnerCourses, mTextNoteText, mTextNoteTitle);
+            loadNoteData();
         }
 
         // add log cat msg
         Log.d(TAG, "onCreate");
+
+    }
+
+    private void loadNoteData() {
+        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+
+        String courseId = "android_intents";
+        String titleStart = "dynamic";
+
+        String selection = NoteInfoEntry.COLUMN_COURSE_ID + "= AND " +
+                            NoteInfoEntry.COLUMN_NOTE_TITLE + " LIKE ?";
+
+        String[] selectionArgs = {courseId, titleStart + "%"};
+
+        String[] noteColumns = {
+          NoteInfoEntry.COLUMN_COURSE_ID,
+                NoteInfoEntry.COLUMN_NOTE_TITLE,
+                NoteInfoEntry.COLUMN_NOTE_TEXT
+        };
+
+        mNotesCursor = db.query(NoteInfoEntry.TABLE_NAME, noteColumns, selection, selectionArgs, null, null, null);
+
+        mCourseIdPos = mNotesCursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
+        mNoteTitlePos = mNotesCursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
+        mNoteTextPos = mNotesCursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
+
+        mNotesCursor.moveToNext();
+        displayNote();
+
 
     }
 
@@ -124,12 +170,17 @@ public class NoteActivity extends AppCompatActivity {
         mNote.setText(mTextNoteText.getText().toString());
     }
 
-    private void displayNote(Spinner spinnerCourses, EditText textNoteText, EditText textNoteTitle) {
+    private void displayNote() {
+        String courseId = mNotesCursor.getString(mCourseIdPos);
+        String noteTitle = mNotesCursor.getString(mNoteTitlePos);
+        String noteText = mNotesCursor.getString(mNoteTextPos);
+
         List<CourseInfo> courses = DataManager.getInstance().getCourses();
-        int courseIndex = courses.indexOf(mNote.getCourse());
-        spinnerCourses.setSelection(courseIndex);
-        textNoteTitle.setText(mNote.getTitle());
-        textNoteText.setText(mNote.getText());
+        CourseInfo course = DataManager.getInstance().getCourse(courseId);
+        int courseIndex = courses.indexOf(course);
+        mSpinnerCourses.setSelection(courseIndex);
+        mTextNoteTitle.setText(noteTitle);
+        mTextNoteText.setText(noteText);
 
     }
 
@@ -197,7 +248,7 @@ public class NoteActivity extends AppCompatActivity {
         ++mNotePosition;
         mNote = DataManager.getInstance().getNotes().get(mNotePosition);
         saveOrignalNoteValues();
-        displayNote(mSpinnerCourses, mTextNoteTitle, mTextNoteText);
+        displayNote();
         invalidateOptionsMenu();
     }
 
