@@ -40,7 +40,7 @@ public class DataManager {
                 NoteInfoEntry.COLUMN_COURSE_ID };
 
         final Cursor courseCursor = db.query(CourseInfoEntry.TABLE_NAME, courseColumns,
-                null, null, null, null, CourseInfoEntry.COLUMN_COURSE_TITLE + "DESC");
+                null, null, null, null, CourseInfoEntry.COLUMN_COURSE_TITLE + " DESC");
         loadCoursesFromDatabase(courseCursor);
 
         String noteOrderBy = NoteInfoEntry.COLUMN_COURSE_ID + " , " + NoteInfoEntry.COLUMN_NOTE_TITLE;

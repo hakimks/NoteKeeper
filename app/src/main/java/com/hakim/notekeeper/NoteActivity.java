@@ -92,7 +92,7 @@ public class NoteActivity extends AppCompatActivity {
         String courseId = "android_intents";
         String titleStart = "dynamic";
 
-        String selection = NoteInfoEntry.COLUMN_COURSE_ID + "= AND " +
+        String selection = NoteInfoEntry.COLUMN_COURSE_ID + " = ? AND " +
                             NoteInfoEntry.COLUMN_NOTE_TITLE + " LIKE ?";
 
         String[] selectionArgs = {courseId, titleStart + "%"};
