@@ -11,8 +11,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
+import com.hakim.notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
 import com.hakim.notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
 
 import java.util.List;
@@ -42,6 +44,7 @@ public class NoteActivity extends AppCompatActivity {
     private int mNoteTitlePos;
     private int mNoteTextPos;
     private int mNoteId;
+    private SimpleCursorAdapter mAdapterCourse;
 
     @Override
     protected void onDestroy() {
@@ -60,19 +63,24 @@ public class NoteActivity extends AppCompatActivity {
 
         mSpinnerCourses = (Spinner) findViewById(R.id.spinner_course);
 
-        List<CourseInfo> course = DataManager.getInstance().getCourses();
+//        change from ArrayAdapter to CursorAdapter
+//        List<CourseInfo> course = DataManager.getInstance().getCourses();
 
 //        Array Adaptor class
-        ArrayAdapter<CourseInfo> adapterCourse = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, course);
-        adapterCourse.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        ArrayAdapter<CourseInfo> adapterCourse = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, course);
+        mAdapterCourse = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, null,
+                new String[] {CourseInfoEntry.COLUMN_COURSE_TITLE},
+                new int[] {android.R.id.text1}, 0);
 
-        mSpinnerCourses.setAdapter(adapterCourse);
+        mAdapterCourse.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        mSpinnerCourses.setAdapter(mAdapterCourse);
+
+//        not good idea to load data in oncreate method
+        loadCourseData();
 
         readDisplayStateValues();
-//        create the note from database here
-//        if (!isNewNote){
-//            loadNoteData();
-//        }
+//
 
         if (savedInstanceState == null){
             saveOrignalNoteValues();
@@ -91,6 +99,21 @@ public class NoteActivity extends AppCompatActivity {
         // add log cat msg
         Log.d(TAG, "onCreate");
 
+    }
+
+    private void loadCourseData() {
+        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+
+        String [] courseColumns = {
+                CourseInfoEntry.COLUMN_COURSE_TITLE,
+                CourseInfoEntry.COLUMN_COURSE_ID,
+                CourseInfoEntry._ID
+        };
+
+        Cursor cursor = db.query(CourseInfoEntry.TABLE_NAME, courseColumns,
+                null, null,null,null, CourseInfoEntry.COLUMN_COURSE_TITLE);
+
+        mAdapterCourse.changeCursor(cursor);
     }
 
     private void loadNoteData() {
