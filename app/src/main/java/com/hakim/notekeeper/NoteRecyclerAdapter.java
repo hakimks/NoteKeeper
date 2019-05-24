@@ -13,15 +13,13 @@ import android.widget.TextView;
 
 import com.hakim.notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
 
-import java.util.List;
-
 public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapter.ViewHolder>{
     private final Context mContext;
     private Cursor mCursor;
     private final LayoutInflater mLayoutInflater;
     private int mMCoursePos;
     private int mMNoteTitlePos;
-    private int mMIdPos;
+    private int mIdPos;
 
     public NoteRecyclerAdapter(Context context, Cursor cursor) {
         mContext = context;
@@ -38,12 +36,13 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
         // get Column indexes from cursor
         mMCoursePos = mCursor.getColumnIndex(NoteInfoEntry.COLUMN_COURSE_ID);
         mMNoteTitlePos = mCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
-        mMIdPos = mCursor.getColumnIndex(NoteInfoEntry._ID);
+        mIdPos = mCursor.getColumnIndex(NoteInfoEntry._ID);
     }
 
     public void changeCusrsor(Cursor cursor){
         if (mCursor != null)
             mCursor.close();
+        mCursor = cursor;
         populateColumnPositions();
         notifyDataSetChanged();
     }
@@ -60,7 +59,7 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
        mCursor.moveToPosition(position);
        String course = mCursor.getString(mMCoursePos);
        String noteTitle = mCursor.getString(mMNoteTitlePos);
-       int id = mCursor.getInt(mMIdPos);
+       int id = mCursor.getInt(mIdPos);
 
         viewHolder.mTextCourse.setText(course);
         viewHolder.mTextTitle.setText(noteTitle);
