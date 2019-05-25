@@ -12,15 +12,12 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
 import com.hakim.notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
 import com.hakim.notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
-
-import java.util.List;
 
 public class NoteActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int LOADER_NOTES = 0;
@@ -50,6 +47,8 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
     private int mNoteTextPos;
     private int mNoteId;
     private SimpleCursorAdapter mAdapterCourse;
+    private boolean mCoursesQueryFinished;
+    private boolean mMNotesQueryFinished;
 
     @Override
     protected void onDestroy() {
@@ -334,6 +333,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private CursorLoader createLoaderCourses() {
+        mCoursesQueryFinished = false;
         return new CursorLoader(this){
             @Override
             public Cursor loadInBackground(){
@@ -353,6 +353,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private CursorLoader createLoaderNotes() {
+        mMNotesQueryFinished = false;
         return new CursorLoader(this){
             @Override
             public Cursor loadInBackground() {
@@ -378,6 +379,8 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
             loadFinishedNotes(data);
         else if (loader.getId() == LOADER_COURSES){
             mAdapterCourse.changeCursor(data);
+            mCoursesQueryFinished = true;
+            displayNoteWhenQueriesFinished();
         }
 
     }
@@ -389,7 +392,13 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
         mNoteTextPos = mNotesCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TEXT);
 
         mNotesCursor.moveToNext();
-        displayNote();
+        mMNotesQueryFinished = true;
+        displayNoteWhenQueriesFinished();
+    }
+
+    private void displayNoteWhenQueriesFinished() {
+        if (mMNotesQueryFinished && mCoursesQueryFinished)
+            displayNote();
     }
 
     @Override
