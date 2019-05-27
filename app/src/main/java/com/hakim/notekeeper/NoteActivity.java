@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -181,11 +182,19 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void deleteNoteFromDatabase() {
-        String selection = NoteInfoEntry._ID + " = ? ";
-        String[] selectionArgs =  { Integer.toString(mNoteId)};
+       final String selection = NoteInfoEntry._ID + " = ? ";
+       final String[] selectionArgs =  { Integer.toString(mNoteId)};
 
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        db.delete(NoteInfoEntry.TABLE_NAME,selection, selectionArgs);
+        AsyncTask tast = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+                db.delete(NoteInfoEntry.TABLE_NAME,selection, selectionArgs);
+                return null;
+            }
+        };
+
+        tast.execute();
     }
 
     private void storePreviousNoteValues() {
@@ -223,16 +232,24 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void saveNoteToDatabase(String courseId, String noteTitle, String noteText){
-        String selection = NoteInfoEntry._ID + " =? ";
-        String[] selectionArgs = {Integer.toString(mNoteId)};
+        final String selection = NoteInfoEntry._ID + " =? ";
+        final String[] selectionArgs = {Integer.toString(mNoteId)};
 
-        ContentValues values = new ContentValues();
+        final ContentValues values = new ContentValues();
         values.put(NoteInfoEntry.COLUMN_COURSE_ID, courseId);
         values.put(NoteInfoEntry.COLUMN_NOTE_TITLE, noteTitle);
         values.put(NoteInfoEntry.COLUMN_NOTE_TEXT, noteText);
 
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        db.update(NoteInfoEntry.TABLE_NAME, values, selection, selectionArgs);
+        AsyncTask tast = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+                db.update(NoteInfoEntry.TABLE_NAME, values, selection, selectionArgs);
+                return null;
+            }
+        };
+
+        tast.execute();
     }
 
     private void displayNote() {
@@ -286,14 +303,22 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void createNewNote() {
        // create placeholder note with empty values
-        ContentValues values = new ContentValues();
+        final ContentValues values = new ContentValues();
         values.put(NoteInfoEntry.COLUMN_COURSE_ID, "");
         values.put(NoteInfoEntry.COLUMN_NOTE_TITLE, "");
         values.put(NoteInfoEntry.COLUMN_NOTE_TEXT, "");
 
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        AsyncTask task = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
-        mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);
+                mNoteId = (int) db.insert(NoteInfoEntry.TABLE_NAME, null, values);
+                return null;
+            }
+        };
+
+       task.execute();
     }
 
 
