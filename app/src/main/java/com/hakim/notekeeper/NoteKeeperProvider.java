@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
+import com.hakim.notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
 import com.hakim.notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
 
 public class NoteKeeperProvider extends ContentProvider {
@@ -44,7 +45,7 @@ public class NoteKeeperProvider extends ContentProvider {
                         String[] selectionArgs, String sortOrder) {
         Cursor cursor = null;
         SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
-        cursor = db.query(NoteInfoEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+        cursor = db.query(CourseInfoEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
         return cursor;
     }
 
