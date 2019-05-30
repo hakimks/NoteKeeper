@@ -3,9 +3,13 @@ package com.hakim.notekeeper;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
+import com.hakim.notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
+
 public class NoteKeeperProvider extends ContentProvider {
+    private NoteKeeperOpenHelper mDbOpenHelper;
     public NoteKeeperProvider() {
     }
 
@@ -31,14 +35,17 @@ public class NoteKeeperProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         // TODO: Implement this to initialize your content provider on startup.
-        return false;
+        mDbOpenHelper = new NoteKeeperOpenHelper(getContext());
+        return true;
     }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        // TODO: Implement this to handle query requests from clients.
-        throw new UnsupportedOperationException("Not yet implemented");
+        Cursor cursor = null;
+        SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
+        cursor = db.query(NoteInfoEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+        return cursor;
     }
 
     @Override
