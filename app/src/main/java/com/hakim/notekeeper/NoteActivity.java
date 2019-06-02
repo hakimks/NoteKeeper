@@ -21,6 +21,7 @@ import android.widget.Spinner;
 
 import com.hakim.notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
 import com.hakim.notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
+import com.hakim.notekeeper.NoteKeeperProviderContract.Courses;
 
 public class NoteActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int LOADER_NOTES = 0;
@@ -397,14 +398,15 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private CursorLoader createLoaderCourses() {
         mCoursesQueryFinished = false;
-        Uri uri = Uri.parse("content://com.hakim.notekeeper.provider");
+        Uri uri = NoteKeeperProviderContract.Courses.CONTENT_URI;
         String [] courseColumns = {
-                CourseInfoEntry.COLUMN_COURSE_TITLE,
-                CourseInfoEntry.COLUMN_COURSE_ID,
-                CourseInfoEntry._ID
+                Courses.COLUMN_COURSE_TITLE,
+                Courses.COLUMN_COURSE_ID,
+                Courses._ID
         };
 
-        return new CursorLoader(this, uri, courseColumns, null, null, CourseInfoEntry.COLUMN_COURSE_TITLE);
+        return new CursorLoader(this, uri, courseColumns, null, null,
+                Courses.COLUMN_COURSE_TITLE);
 
     }
 
