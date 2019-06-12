@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.content.ContentUris;
 
 import com.hakim.notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
 import com.hakim.notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
@@ -406,23 +407,15 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private CursorLoader createLoaderNotes() {
         mMNotesQueryFinished = false;
-        return new CursorLoader(this){
-            @Override
-            public Cursor loadInBackground() {
-                SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-                String selection = NoteInfoEntry._ID + "= ?";
-                String[] selectionArgs = {Integer.toString(mNoteId)};
 
-                String[] noteColumns = {
-                        NoteInfoEntry.COLUMN_COURSE_ID,
-                        NoteInfoEntry.COLUMN_NOTE_TITLE,
-                        NoteInfoEntry.COLUMN_NOTE_TEXT
-                };
-
-                return db.query(NoteInfoEntry.TABLE_NAME, noteColumns, selection, selectionArgs, null, null, null);
-
-            }
+        String[] noteColumns = {
+                Notes.COLUMN_COURSE_ID,
+                Notes.COLUMN_NOTE_TITLE,
+                Notes.COLUMN_NOTE_TEXT
         };
+        mNotesUri = ContentUris.withAppendedId(Notes.CONTENT_URI, mNoteId);
+
+        return new CursorLoader(this, mNotesUri, noteColumns, null, null, null);
     }
 
     @Override
