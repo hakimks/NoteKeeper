@@ -54,6 +54,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
     private SimpleCursorAdapter mAdapterCourse;
     private boolean mCoursesQueryFinished;
     private boolean mMNotesQueryFinished;
+    private Uri mNotesUri;
 
     @Override
     protected void onDestroy() {
@@ -311,7 +312,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
         values.put(Notes.COLUMN_NOTE_TITLE, "");
         values.put(Notes.COLUMN_NOTE_TEXT, "");
 
-        Uri uri = getContentResolver().insert(Notes.CONTENT_URI, values);
+        mNotesUri = getContentResolver().insert(Notes.CONTENT_URI, values);
 
 
     }
