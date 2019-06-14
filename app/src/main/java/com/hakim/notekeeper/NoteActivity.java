@@ -193,8 +193,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
         AsyncTask tast = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
-                SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-                db.delete(NoteInfoEntry.TABLE_NAME,selection, selectionArgs);
+                getContentResolver().delete(mNotesUri, null, null);
                 return null;
             }
         };
@@ -237,24 +236,14 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void saveNoteToDatabase(String courseId, String noteTitle, String noteText){
-        final String selection = NoteInfoEntry._ID + " =? ";
-        final String[] selectionArgs = {Integer.toString(mNoteId)};
+        ContentValues values = new ContentValues();
+        values.put(Notes.COLUMN_COURSE_ID, courseId);
+        values.put(Notes.COLUMN_NOTE_TITLE, noteTitle);
+        values.put(Notes.COLUMN_NOTE_TEXT, noteText);
 
-        final ContentValues values = new ContentValues();
-        values.put(NoteInfoEntry.COLUMN_COURSE_ID, courseId);
-        values.put(NoteInfoEntry.COLUMN_NOTE_TITLE, noteTitle);
-        values.put(NoteInfoEntry.COLUMN_NOTE_TEXT, noteText);
+        getContentResolver().update(mNotesUri, values, null, null);
 
-        AsyncTask tast = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] objects) {
-                SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-                db.update(NoteInfoEntry.TABLE_NAME, values, selection, selectionArgs);
-                return null;
-            }
-        };
 
-        tast.execute();
     }
 
     private void displayNote() {
