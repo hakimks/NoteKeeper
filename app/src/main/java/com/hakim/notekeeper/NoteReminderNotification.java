@@ -43,6 +43,7 @@ public class NoteReminderNotification {
      * @see #cancel(Context)
      */
     public static void notify(final Context context,
+                              final String noteTitle,
                               final String noteText) {
         final Resources res = context.getResources();
 
@@ -62,7 +63,10 @@ public class NoteReminderNotification {
                 // notification title, and text.
                 .setSmallIcon(R.drawable.ic_stat_note_reminder)
                 .setContentTitle("Review Note")
-                .setContentText(noteText)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText(noteText)
+                            .setBigContentTitle(noteTitle)
+                            .setSummaryText("Review Note"))
 
                 // All fields below this line are optional.
 
