@@ -105,6 +105,15 @@ public class NoteReminderNotification {
                                 0,
                                noteActivityIntent,
                                 PendingIntent.FLAG_UPDATE_CURRENT))
+                .addAction(
+                        0,
+                        "View all Notes",
+                        PendingIntent.getActivity(
+                                context,
+                                0,
+                                new Intent(context, MainActivity.class),
+                                PendingIntent.FLAG_UPDATE_CURRENT))
+
 
                 // Automatically dismiss the notification when it is touched.
                 .setAutoCancel(true);
