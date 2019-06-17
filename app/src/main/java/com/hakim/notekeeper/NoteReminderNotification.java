@@ -44,12 +44,15 @@ public class NoteReminderNotification {
      */
     public static void notify(final Context context,
                               final String noteTitle,
-                              final String noteText) {
+                              final String noteText, int noteId) {
         final Resources res = context.getResources();
 
         // This image is used as the notification's large icon (thumbnail).
         // TODO: Remove this if your notification has no relevant thumbnail.
         final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.logo);
+
+        Intent noteActivityIntent = new Intent(context, NoteActivity.class);
+        noteActivityIntent.putExtra(NoteActivity.NOTE_ID, noteId);
 
 
 
@@ -100,7 +103,7 @@ public class NoteReminderNotification {
                         PendingIntent.getActivity(
                                 context,
                                 0,
-                                new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com")),
+                               noteActivityIntent,
                                 PendingIntent.FLAG_UPDATE_CURRENT))
 
                 // Automatically dismiss the notification when it is touched.
