@@ -340,7 +340,8 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void showReminderNotification() {
-        NoteReminderNotification.notify(this, "This is a dummy notification", 0);
+        String noteText = mTextNoteText.getText().toString();
+        NoteReminderNotification.notify(this, noteText);
 
     }
 
