@@ -19,7 +19,9 @@ import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.content.ContentUris;
+import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.hakim.notekeeper.NoteKeeperDatabaseContract.CourseInfoEntry;
 import com.hakim.notekeeper.NoteKeeperDatabaseContract.NoteInfoEntry;
 import com.hakim.notekeeper.NoteKeeperProviderContract.Courses;
@@ -296,14 +298,37 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void createNewNote() {
-       // create placeholder note with empty values
+       AsyncTask<ContentValues, Void, Uri> task = new AsyncTask<ContentValues, Void, Uri>() {
+           @Override
+           protected Uri doInBackground(ContentValues... contentValues) {
+               Log.d(TAG, "doInBackground Thread- " + Thread.currentThread().getId());
+               ContentValues insertValues = contentValues[0];
+               Uri rowUri = getContentResolver().insert(Notes.CONTENT_URI, insertValues);
+               return rowUri;
+           }
+
+           @Override
+           protected void onPostExecute(Uri uri) {
+               Log.d(TAG, "onPostExcecute Thread- " + Thread.currentThread().getId());
+               mNotesUri = uri;
+               displaySnackBar(mNotesUri.toString());
+
+           }
+       };
+
         ContentValues values = new ContentValues();
         values.put(Notes.COLUMN_COURSE_ID, "");
         values.put(Notes.COLUMN_NOTE_TITLE, "");
         values.put(Notes.COLUMN_NOTE_TEXT, "");
 
-        mNotesUri = getContentResolver().insert(Notes.CONTENT_URI, values);
+        Log.d(TAG, "Call to execute Thread- " + Thread.currentThread().getId());
+       task.execute(values);
 
+
+    }
+
+    private  void displaySnackBar(String txt){
+        Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT).show();
 
     }
 
