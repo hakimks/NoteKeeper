@@ -15,7 +15,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.content.ContentUris;
@@ -298,13 +300,35 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void createNewNote() {
-       AsyncTask<ContentValues, Void, Uri> task = new AsyncTask<ContentValues, Void, Uri>() {
+       AsyncTask<ContentValues, Integer, Uri> task = new AsyncTask<ContentValues, Integer, Uri>() {
+           private ProgressBar mProgressBar;
+
+           @Override
+           protected void onPreExecute() {
+               mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+               mProgressBar.setVisibility(View.VISIBLE);
+               mProgressBar.setProgress(1);
+           }
+
            @Override
            protected Uri doInBackground(ContentValues... contentValues) {
                Log.d(TAG, "doInBackground Thread- " + Thread.currentThread().getId());
                ContentValues insertValues = contentValues[0];
                Uri rowUri = getContentResolver().insert(Notes.CONTENT_URI, insertValues);
+
+               simulateLongRunningWork(); // simulate slow work with data
+               publishProgress(2);
+
+               simulateLongRunningWork(); // simulate slow work with data
+               publishProgress(3);
+
                return rowUri;
+           }
+
+           @Override
+           protected void onProgressUpdate(Integer... values) {
+               int progressValue = values[0];
+               mProgressBar.setProgress(progressValue);
            }
 
            @Override
@@ -312,6 +336,7 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
                Log.d(TAG, "onPostExcecute Thread- " + Thread.currentThread().getId());
                mNotesUri = uri;
                displaySnackBar(mNotesUri.toString());
+               mProgressBar.setProgress(View.GONE);
 
            }
        };
@@ -378,6 +403,12 @@ public class NoteActivity extends AppCompatActivity implements LoaderManager.Loa
         int lastNoteIndex = DataManager.getInstance().getNotes().size() -1;
         item.setEnabled(mNotePosition<lastNoteIndex);
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    private void simulateLongRunningWork() {
+        try {
+            Thread.sleep(2000);
+        } catch(Exception ex) {}
     }
 
     private void moveNext() {
