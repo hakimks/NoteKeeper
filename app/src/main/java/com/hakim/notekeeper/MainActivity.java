@@ -16,7 +16,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
+import android.view.Gravity;
 import android.view.View;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -104,6 +107,20 @@ public class MainActivity extends AppCompatActivity
         getLoaderManager().restartLoader(LOADER_NOTES, null, this);
 
         updateNavHeader();
+
+        openDrawer();
+    }
+
+    private void openDrawer() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.openDrawer(Gravity.LEFT);
+            }
+        }, 1000);
+
     }
 
     private void loaNotes() {
